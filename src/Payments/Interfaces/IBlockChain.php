@@ -51,6 +51,13 @@ interface IBlockChain{
      */
     public function fetchingWalletBalance($guid,$password);
 
+     /***
+     * @param $address
+     * @param $confs
+     * @return mixed
+     */
+    public function addressConfirmedBalance($address, $confs);
+
     /***
      * List all active addresses in a wallet. Also includes a 0 confirmation balance which should be used as an estimate only and will include unconfirmed transactions and possibly double spends.
      *

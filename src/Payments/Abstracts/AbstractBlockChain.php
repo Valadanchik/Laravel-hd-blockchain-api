@@ -12,11 +12,13 @@ use Valadanchik\BlockChain\Payments\Interfaces\IBlockChain;
 abstract class AbstractBlockChain extends GlobalFunctions implements IBlockChain
 {
     protected $local_url = 'http://127.0.0.1:3000';
+    protected $blockchain_url = 'https://blockchain.info';
+
     /**
      * 1BTC = 100000000;
      * @var  integer
      */
-    const SATOSHI = 100000000;
+    protected $satoshi = 100000000;
     /***
      * @param $url
      * @return mixed
@@ -94,13 +96,13 @@ abstract class AbstractBlockChain extends GlobalFunctions implements IBlockChain
         $params = array(
             'password' => $password,
             // 'second_password ' => our second Blockchain Wallet password if double encryption is enabled,
-            'api_code' => '6f306855-fcc7-4157-93ac-5ca19ef332a4',
+            'api_code' => $this->apiKey,
             'to' => $to_address,
             'amount' => $amount,
             'from' => $from_address,
             // 'fee' => $fee,
         );
-        $local_url = $this->local_url;
+        $local_url = $this->url;
         $url = "$local_url/merchant/$guid/payment?".http_build_query($params);
         $json_data = file_get_contents($url);
         $json_feed = json_decode($json_data, true);
@@ -151,6 +153,20 @@ abstract class AbstractBlockChain extends GlobalFunctions implements IBlockChain
         return   $this->postRequest($fullUrl,[
             'password' => $password
         ]);
+    }
+
+    /***
+     * @param $guid
+     * @param $password
+     * @return mixed
+     */
+    public function addressConfirmedBalance($receiveAddress, $confs = 6){
+        $fullUrl = sprintf("{$this->blockchain_url}{$this->urlAddrConfirmedBalance}",$receiveAddress, $confs);
+        $json_data = file_get_contents($fullUrl);
+        $balance_sat = json_decode($json_data, true);
+        $balance_btc = $balance_sat/$this->satoshi;
+        return $balance_btc;
+
     }
 
     /***

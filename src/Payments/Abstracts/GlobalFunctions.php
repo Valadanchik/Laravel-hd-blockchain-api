@@ -27,6 +27,9 @@ abstract class GlobalFunctions
     ///merchant/:guid/balance
     protected $urlFetchBalance =  '/merchant/%s/balance';
 
+    //q/getreceivedbyaddress
+    protected $urlAddrConfirmedBalance =  '/q/getreceivedbyaddress/%s/confirmations=%s';
+
     //Enable HD Functionality: /merchant/:guid/enableHD
     protected $urlEnableHDFunctionality =  '/merchant/%s/enableHD';
 
@@ -46,7 +49,7 @@ abstract class GlobalFunctions
         $this->apiKey = config('blockchain.api_key');
         $this->curl = $cURL;
     }
-    
+
     /***
      * Request has method = POST
      *
@@ -66,8 +69,8 @@ abstract class GlobalFunctions
      * @param $data
      * @return mixed
      */
-    public function getRequest($url,$data){
-        return $this->getResponse($this->curl->get($this->url, $this->parameters));
+    public function getRequest($url){
+        return $this->getResponse($this->curl->get($url));
     }
 
     /***
