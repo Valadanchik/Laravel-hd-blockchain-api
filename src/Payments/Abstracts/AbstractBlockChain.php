@@ -162,7 +162,13 @@ abstract class AbstractBlockChain extends GlobalFunctions implements IBlockChain
      */
     public function addressConfirmedBalance($receiveAddress, $confs = 6){
         $fullUrl = sprintf("{$this->blockchain_url}{$this->urlAddrConfirmedBalance}",$receiveAddress, $confs);
-        $json_data = file_get_contents($fullUrl);
+        $status_of_connection = true;
+        while ($status_of_connection){
+            $json_data = @file_get_contents($fullUrl);
+            if($json_data){
+                $status_of_connection = false;
+            }
+        }
         $balance_sat = json_decode($json_data, true);
         $balance_btc = $balance_sat/$this->satoshi;
         return $balance_btc;
